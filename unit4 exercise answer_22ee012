@@ -1,0 +1,448 @@
+Text cell <undefined>
+# %% [markdown]
+## Exception Handling
+### Program 1
+
+Python Program should get the Name, Age, 6 Subjects marks as an input from the user. Then generate the dictionary as below​
+
+Before generating an dictionary you need to check whether entered age value is positive or not. If negative then we should add the details to the dictionary.
+
+Use User-Defined Exception Handling
+
+Code cell <undefined>
+# %% [code]
+class NegativeAgeException(Exception):
+    def __init__(self, age):
+        self.age = age
+
+    def __str__(self):
+        return f"Error: Invalid age value ({self.age}). Age must be a positive integer."
+
+
+def get_student_details():
+    name = input("Enter student name: ")
+    age = int(input("Enter student age: "))
+
+    if age < 0:
+        raise NegativeAgeException(age)
+
+    marks = []
+    for i in range(6):
+        subject_name = input(f"Enter subject {i+1} name: ")
+        subject_marks = float(input(f"Enter marks for {subject_name}: "))
+        marks.append((subject_name, subject_marks))
+
+    return {
+        "name": name,
+        "age": age,
+        "marks": marks
+    }
+
+
+if __name__ == "__main__":
+    try:
+        student_details = get_student_details()
+        print("\nStudent Details:")
+        print("Name:", student_details["name"])
+        print("Age:", student_details["age"])
+        print("Marks:")
+        for subject, marks in student_details["marks"]:
+            print(f"{subject}: {marks}")
+    except ValueError:
+        print("Error: Invalid input. Age should be an integer and marks should be a number.")
+    except NegativeAgeException as ex:
+        print(ex)
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+Text cell <undefined>
+# %% [markdown]
+Python Program should read the Name, Roll Number and the 6 Subject marks.
+
+While entering the marks if we have entering the marks greater than 100 or less than 0 then it should throw an error (**User generated Exception**).
+
+For calculating the total,average, minimum and maximum use function
+
+![image-3.png](attachment:image-3.png)
+
+**Sample Output**
+
+![image.png](attachment:image.png)
+
+Text cell <undefined>
+# %% [markdown]
+
+
+Text cell <undefined>
+# %% [markdown]
+Now Handle the above using **Try and Execpt** Block.
+
+If all the marks are entered correctly then it should display the Total, Average and his minimum and maximum mark.
+
+For calculating the total,average, minimum and maximum use function
+
+![image.png](attachment:image.png)
+
+#### If the entered mark is invalid then the function should "0" if it is valid then function should return total,average,minimum and maximum
+
+Use User-Defined Exception
+
+In addition to above add one condition when displaying the total,average,minimum and maximum.
+
+if he got marks less that 50 then just display "have failed", else display the all the detials.
+
+Now change the code accordingly and display the output as below
+
+#### Sample output 1 - with valid marks
+
+![image-2.png](attachment:image-2.png)
+
+#### Sample output 1 - with valid marks but he FAILED
+
+![image-3.png](attachment:image-3.png)
+
+#### Sample output 2 - with invalid marks
+
+![image-4.png](attachment:image-4.png)
+
+Code cell <undefined>
+# %% [code]
+
+
+Text cell <undefined>
+# %% [markdown]
+## FILES
+
+
+
+Text cell <undefined>
+ChatGPT
+To achieve the desired program functionality using the try and except block along with user-generated exceptions, and displaying appropriate messages based on the marks, we can modify the previous code. We will add conditions in the functions to handle invalid marks and return "0" in case of invalid marks. Additionally, we will implement logic to check if the student has failed or not.
+
+Here's the updated Python program:
+
+python
+Copy code
+class InvalidMarksException(Exception):
+    def __init__(self, marks):
+        self.marks = marks
+
+    def __str__(self):
+        return f"Error: Invalid marks value ({self.marks}). Marks should be between 0 and 100."
+
+
+def get_student_details():
+    name = input("Enter student name: ")
+    roll_number = input("Enter roll number: ")
+
+    marks = []
+    for i in range(6):
+        while True:
+            try:
+                subject_name = input(f"Enter subject {i+1} name: ")
+                subject_marks = float(input(f"Enter marks for {subject_name}: "))
+                if subject_marks < 0 or subject_marks > 100:
+                    raise InvalidMarksException(subject_marks)
+                break
+            except ValueError:
+                print("Invalid input. Please enter a valid number for marks.")
+            except InvalidMarksException as ex:
+                print(ex)
+
+        marks.append((subject_name, subject_marks))
+
+    return {
+        "name": name,
+        "roll_number": roll_number,
+        "marks": marks
+    }
+
+
+def calculate_total(marks):
+    total = sum(m for _, m in marks)
+    return total if all(0 <= m <= 100 for _, m in marks) else 0
+
+
+def calculate_average(marks):
+    total = calculate_total(marks)
+    return total / len(marks) if total != 0 else 0
+
+
+def calculate_minimum(marks):
+    minimum = min(m for _, m in marks)
+    return minimum if all(0 <= m <= 100 for _, m in marks) else 0
+
+
+def calculate_maximum(marks):
+    maximum = max(m for _, m in marks)
+    return maximum if all(0 <= m <= 100 for _, m in marks) else 0
+
+
+if __name__ == "__main__":
+    try:
+        student_details = get_student_details()
+        print("\nStudent Details:")
+        print("Name:", student_details["name"])
+        print("Roll Number:", student_details["roll_number"])
+        print("Marks:")
+        for subject, marks in student_details["marks"]:
+            print(f"{subject}: {marks}")
+
+        total = calculate_total(student_details["marks"])
+        average = calculate_average(student_details["marks"])
+        minimum = calculate_minimum(student_details["marks"])
+        maximum = calculate_maximum(student_details["marks"])
+
+        print("\nCalculations:")
+        if total >= 50:
+            print("Total Marks:", total)
+            print("Average Marks:", average)
+            print("Minimum Marks:", minimum)
+            print("Maximum Marks:", maximum)
+        else:
+            print("You have failed. Total, Average, Minimum, and Maximum marks will not be displayed.")
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+### PROGRAM 1
+Write a function in python to count the number of lines from a text file "proverb.txt" which is not starting with an alphabet "D".
+
+**Example:** 
+
+If the file "proverb.txt" contains the following lines:
+
+Many hands make light work
+
+Honesty is the best policy
+
+Don’t bite the hand that feeds you
+
+Don’t judge a book by its cover
+
+Birds of a feather flock together
+
+Diamonds cut diamonds
+
+Code cell <undefined>
+# %% [code]
+### PROGRAM 1
+Write a function in python to count the number of lines from a text file "proverb.txt" which is not starting with an alphabet "D".
+
+**Example:** 
+
+If the file "proverb.txt" contains the following lines:
+
+Many hands make light work
+
+Honesty is the best policy
+
+Don’t bite the hand that feeds you
+
+Don’t judge a book by its cover
+
+Birds of a feather flock together
+
+Diamonds cut diamonds
+
+Code cell <undefined>
+# %% [code]
+
+
+### PROGRAM 1
+Write a function in python to count the number of lines from a text file "proverb.txt" which is not starting with an alphabet "D".
+
+**Example:** 
+
+If the file "proverb.txt" contains the following lines:
+
+Many hands make light work
+
+Honesty is the best policy
+
+Don’t bite the hand that feeds you
+
+Don’t judge a book by its cover
+
+Birds of a feather flock together
+
+Diamonds cut diamonds
+
+Code cell <undefined>
+# %% [code]
+### PROGRAM 1
+Write a function in python to count the number of lines from a text file "proverb.txt" which is not starting with an alphabet "D".
+
+**Example:** 
+
+If the file "proverb.txt" contains the following lines:
+
+Many hands make light work
+
+Honesty is the best policy
+
+Don’t bite the hand that feeds you
+
+Don’t judge a book by its cover
+
+Birds of a feather flock together
+
+Diamonds cut diamonds
+
+Code cell <undefined>
+# %% [code]
+def count_lines_not_starting_with_D(file_path):
+    count = 0
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                if not line.strip().startswith('D'):
+                    count += 1
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' could not be found.")
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+    
+    return count
+
+file_path = "proverb.txt"
+result = count_lines_not_starting_with_D(file_path)
+print(f"Number of lines not starting with 'D': {result}")
+
+
+Text cell <undefined>
+# %% [markdown]
+
+
+Text cell <undefined>
+# %% [markdown]
+### Program 2
+
+Python Program that display the occurance of a particular character or a string in give input file "proverb.txt"
+
+If the file **"proverb.txt"** contains the following lines:
+
+Many hands make light work
+
+Honesty is the best policy
+
+Don’t bite the hand that feeds you
+
+Don’t judge a book by its cover
+
+Birds of a feather flock together
+
+Diamonds cut diamonds
+
+**Sample Output**
+
+![image.png](attachment:image.png)
+
+Code cell <undefined>
+# %% [code]
+def count_occurrences_in_file(file_path, search_str):
+    count = 0
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                count += line.count(search_str)
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' could not be found.")
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+
+    return count
+
+file_path = "proverb.txt"
+search_string = "hand"
+result = count_occurrences_in_file(file_path, search_string)
+print(f"Occurrences of '{search_string}' in the file: {result}")
+
+
+Text cell <undefined>
+# %% [markdown]
+### Program 3
+
+Write a python code to append the following proverb to the **"proverb.txt"** file.
+
+"Diligence is the mother of good fortune"
+
+##### After updating the file content must be, read the file content and display it.
+
+![image.png](attachment:image.png)
+
+Code cell <undefined>
+# %% [code]
+def append_proverb_to_file(file_path, proverb):
+    try:
+        with open(file_path, 'a') as file:
+            file.write(proverb + "\n")
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' could not be found.")
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+
+
+def read_file_content(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+        return content
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' could not be found.")
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+
+
+file_path = "proverb.txt"
+proverb_to_append = "Diligence is the mother of good fortune"
+append_proverb_to_file(file_path, proverb_to_append)
+
+updated_content = read_file_content(file_path)
+print("Updated File Content:")
+print(updated_content)
+
+
+Text cell <undefined>
+# %% [markdown]
+### Program 4
+
+Now convert all the character in the file "proverb.txt" to uppercase and write to a new file "u_proverb.txt" and display the new contents files also
+
+![image.png](attachment:image.png)
+
+Code cell <undefined>
+# %% [code]
+def convert_to_uppercase(input_file, output_file):
+    try:
+        with open(input_file, 'r') as file:
+            content = file.read()
+
+        uppercase_content = content.upper()
+
+        with open(output_file, 'w') as file:
+            file.write(uppercase_content)
+    except FileNotFoundError:
+        print(f"Error: The file '{input_file}' could not be found.")
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+
+
+def read_file_content(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+        return content
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' could not be found.")
+    except Exception as ex:
+        print("An unexpected error occurred:", ex)
+
+
+input_file_path = "proverb.txt"
+output_file_path = "u_proverb.txt"
+
+convert_to_uppercase(input_file_path, output_file_path)
+
+updated_content = read_file_content(output_file_path)
+print("New File Content (u_proverb.txt):")
+print(updated_content)
+
+
